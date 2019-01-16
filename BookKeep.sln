@@ -1,0 +1,36 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.28315.86
+MinimumVisualStudioVersion = 15.0.26124.0
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Desing", "Desing", "{E3EBBDE1-3550-486E-B45D-FCB54985FB21}"
+	ProjectSection(SolutionItems) = preProject
+		Readme.md = Readme.md
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BookKeep", "BookKeep\BookKeep.csproj", "{16F4162E-1316-4FA2-A7C3-293B03D1C5EE}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BookKeep.Tests", "BookKeep.Tests\BookKeep.Tests.csproj", "{E9959096-A264-43BC-882E-E33C20D9689A}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{16F4162E-1316-4FA2-A7C3-293B03D1C5EE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{16F4162E-1316-4FA2-A7C3-293B03D1C5EE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{16F4162E-1316-4FA2-A7C3-293B03D1C5EE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{16F4162E-1316-4FA2-A7C3-293B03D1C5EE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E9959096-A264-43BC-882E-E33C20D9689A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E9959096-A264-43BC-882E-E33C20D9689A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E9959096-A264-43BC-882E-E33C20D9689A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E9959096-A264-43BC-882E-E33C20D9689A}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {82DBD2E1-B68D-4D02-A81D-460CE2F0E5D3}
+	EndGlobalSection
+EndGlobal

@@ -1,0 +1,97 @@
+﻿<controls:MetroWindow x:Class="BookKeep.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
+        xmlns:views="clr-namespace:BookKeep.Views"
+        xmlns:viewModels="clr-namespace:BookKeep.ViewModels"
+        mc:Ignorable="d"
+        Title="Book Keeper" Height="500" Width="800" ResizeMode="NoResize">
+    <Window.DataContext>
+        <viewModels:MainWindowViewModel/>
+    </Window.DataContext>
+    <!-- Navigation for contentControl -->
+    <Window.Resources>
+        <DataTemplate DataType="{x:Type viewModels:MyLibraryViewModel}">
+            <views:MyLibraryView/>
+        </DataTemplate>
+        <DataTemplate DataType="{x:Type viewModels:WishlistViewModel}">
+            <views:WishlistView/>
+        </DataTemplate>
+        <DataTemplate DataType="{x:Type viewModels:SearchViewModel}">
+            <views:SearchView/>
+        </DataTemplate>
+    </Window.Resources>
+    <Grid>
+        <Grid.Background>
+            <ImageBrush ImageSource="Resources/sandrachile-483700-unsplash.jpg"/>
+        </Grid.Background>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="60px"></RowDefinition>
+            <RowDefinition></RowDefinition>
+        </Grid.RowDefinitions>
+        <Rectangle Grid.Row="0" Fill="#013B53" Opacity="0.6"/>
+        <Label Grid.Row="0" 
+               Content="Book Keeper"
+               FontFamily="Brilliantte Presonal Use Only"
+               FontSize="32"
+               FontWeight="Regular"
+               Foreground="AliceBlue"
+               VerticalAlignment="Center"
+               Margin="5,0"/>
+        <WrapPanel Grid.Row="0" HorizontalAlignment="Right" 
+                   VerticalAlignment="Center">
+            <!-- Todo sort the label appearance on click-->
+            <Button BorderThickness="0" 
+                    Foreground="Transparent" 
+                    Background="Transparent"
+                    Command="{Binding NavigationCommand}"
+                    CommandParameter="library">
+                <Label x:Name="MyLibraryLabel"
+                       Content="My Library"
+                       FontFamily="Brilliantte Presonal Use Only"
+                       FontSize="14"
+                       FontWeight="Regular"
+                       Foreground="AliceBlue"
+                       VerticalAlignment="Center"
+                       Margin="5,0"/>
+            </Button>
+            <Button BorderThickness="0" 
+                Foreground="Transparent" 
+                Background="Transparent"
+                Command="{Binding NavigationCommand}"
+                CommandParameter="wishlist">
+                <Label x:Name="WishilstLabel"
+                       Content="Wishlist"
+                       FontFamily="Brilliantte Presonal Use Only"
+                       FontSize="14"
+                       FontWeight="Regular"
+                       Foreground="AliceBlue"
+                       VerticalAlignment="Center"
+                       Margin="5,0"/>
+
+            </Button>
+            <TextBox controls:TextBoxHelper.Watermark="search goodreads.com"
+                     Name="SearchBox"
+                     Foreground="Gray"
+                     Background="AliceBlue"
+                     Height="25"
+                     Width="195"
+                     HorizontalAlignment="Right"
+                     Margin="5,0"
+                     FontFamily="Poppins"
+                     FontSize="9"
+                     FontWeight="Regular"
+                     VerticalContentAlignment="Center">
+                <!-- Switches view on enter keypress with command -->
+                <TextBox.InputBindings>
+                    <KeyBinding Command="{Binding SearchCommand}"
+                                CommandParameter="{Binding Text, ElementName=SearchBox}"
+                                Key="Return"/>
+                </TextBox.InputBindings>
+            </TextBox>
+        </WrapPanel>
+        <ContentControl Grid.Row="1" Height="350" Width="750" Content="{Binding CurrentViewModel}"/>
+    </Grid>
+</controls:MetroWindow>
