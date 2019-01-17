@@ -1,11 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
-using System.Windows.Input;
-using BookKeep.ViewModels.Commands;
+﻿using BookKeep.ViewModels.Commands;
+using System;
 
 namespace BookKeep.ViewModels
 {
@@ -13,7 +7,7 @@ namespace BookKeep.ViewModels
     {
         private BaseViewModel _currentViewModel;
 
-        private SearchViewModel _searchViewModel = new SearchViewModel();
+        private readonly SearchViewModel _searchViewModel = new SearchViewModel();
 
         public RelayCommand<string> SearchCommand { get; private set; }
         public RelayCommand<string> NavigationCommand { get; private set; }
@@ -24,7 +18,7 @@ namespace BookKeep.ViewModels
             set
             {
                 _currentViewModel = value;
-                OnPropertyChanged(nameof(CurrentViewModel));
+                OnPropertyChanged();
             }
         }
 
@@ -37,9 +31,10 @@ namespace BookKeep.ViewModels
         private async void OnSearch(string obj)
         {
             await _searchViewModel.SearchBooksAsync(obj);
-            CurrentViewModel = _searchViewModel;
+            CurrentViewModel = _searchViewModel;    // Making sure display changes on search
         }
 
+        // Todo - Think of how to make this not new up every time command executes.
         private void OnNav(string destination)
         {
             switch (destination)

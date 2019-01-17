@@ -1,9 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Input;
 
 namespace BookKeep.ViewModels.Commands
@@ -11,8 +7,8 @@ namespace BookKeep.ViewModels.Commands
     public class RelayCommand<T> : ICommand
     {
 
-        readonly Action<T> _execute = null;
-        readonly Predicate<T> _canExecute = null;
+        readonly Action<T> _execute;
+        readonly Predicate<T> _canExecute;
 
 
         public RelayCommand(Action<T> execute)

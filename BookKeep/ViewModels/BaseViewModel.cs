@@ -1,29 +1,27 @@
-﻿using System;
+﻿using BookKeep.Data;
+using BookKeep.Models;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
-using System.Linq;
 using System.Runtime.CompilerServices;
-using System.Text;
-using System.Threading.Tasks;
-using BookKeep.Annotations;
-using BookKeep.Data;
-using BookKeep.Helpers.Interfaces;
-using BookKeep.Models;
+using BookKeep.Properties;
 
 namespace BookKeep.ViewModels
 {
+    /// <summary>
+    /// Allows accessing Collections from base. Solves a lot of issues with switching views.
+    /// </summary>
     public class BaseViewModel : INotifyPropertyChanged
     {
         private ObservableCollection<BookModel> _libraryCollection;
         private ObservableCollection<BookModel> _wishlistCollection;
         private ObservableCollection<BookModel> _searchResults;
 
-        public BookLibraryDB LibraryDb { get; set; }
+        public BookLibraryDb LibraryDb { get; set; }
 
         public ObservableCollection<BookModel> LibraryCollection
         {
-            get { return _libraryCollection; }
+            get => _libraryCollection;
             set
             {
                 _libraryCollection = value;
@@ -32,7 +30,7 @@ namespace BookKeep.ViewModels
         }
         public ObservableCollection<BookModel> WishlistCollection
         {
-            get { return _wishlistCollection; }
+            get => _wishlistCollection;
             set
             {
                 _wishlistCollection = value;
@@ -41,7 +39,7 @@ namespace BookKeep.ViewModels
         }
         public ObservableCollection<BookModel> SearchResults
         {
-            get { return _searchResults; }
+            get => _searchResults;
             set
             {
                 _searchResults = value;
@@ -51,6 +49,11 @@ namespace BookKeep.ViewModels
 
         public event PropertyChangedEventHandler PropertyChanged;
 
+        /// <summary>
+        /// That implementation allows using OnPropertyChanged in derived class without
+        /// specifying name of object. DRY
+        /// </summary>
+        /// <param name="propertyName"></param>
         [NotifyPropertyChangedInvocator]
         protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
         {

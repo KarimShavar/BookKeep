@@ -1,19 +1,18 @@
-﻿using System.Collections.Generic;
-using System.Data.Entity;
-using System.Data.Entity.Infrastructure;
-using System.Data.Entity.Migrations;
-using System.Linq;
-using System.Threading.Tasks;
-using BookKeep.Data;
+﻿using BookKeep.Data;
 using BookKeep.Models;
 using BookKeep.Tests.Data.AsyncMock;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
+using System.Collections.Generic;
+using System.Data.Entity;
+using System.Data.Entity.Infrastructure;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace BookKeep.Tests.Data
 {
     [TestClass()]
-    public class BookLibraryDBTests
+    public class BookLibraryDbTests
     {
         /// <summary>
         /// Test data
@@ -30,7 +29,7 @@ namespace BookKeep.Tests.Data
                               "nor yet a dry, bare, sandy hole with nothing in it to sit down on or to eat: " +
                               "it was a hobbit-hole, and that means comfort.",
                 ImageUrl = "https://images.gr-assets.com/books/1372847500l/5907.jpg",
-                IsRead = false
+                IsRead = true
 
             },
             new BookModel()
@@ -54,7 +53,7 @@ namespace BookKeep.Tests.Data
             //--Arrange
             var mockSet = new Mock<DbSet<BookModel>>();
             var mockContext = new Mock<BookContext>();
-            var library = new BookLibraryDB(mockContext.Object);
+            var library = new BookLibraryDb(mockContext.Object);
 
             //--Act
             mockContext.Setup(m => m.Books).Returns(mockSet.Object);
@@ -87,7 +86,7 @@ namespace BookKeep.Tests.Data
             mockSet.As<IQueryable<BookModel>>().Setup(m => m.ElementType).Returns(data.ElementType);
             mockSet.As<IQueryable<BookModel>>().Setup(m => m.GetEnumerator()).Returns(data.GetEnumerator());
             var mockContext = new Mock<BookContext>();
-            var library = new BookLibraryDB(mockContext.Object);
+            var library = new BookLibraryDb(mockContext.Object);
 
             //--Act
             mockContext.Setup(m => m.Books).Returns(mockSet.Object);
@@ -110,7 +109,7 @@ namespace BookKeep.Tests.Data
             mockSet.As<IQueryable<BookModel>>().Setup(m => m.ElementType).Returns(data.ElementType);
             mockSet.As<IQueryable<BookModel>>().Setup(m => m.GetEnumerator()).Returns(data.GetEnumerator());
             var mockContext = new Mock<BookContext>();
-            var library = new BookLibraryDB(mockContext.Object);
+            var library = new BookLibraryDb(mockContext.Object);
 
             //--Act
             mockContext.Setup(m => m.Books).Returns(mockSet.Object);
@@ -124,7 +123,7 @@ namespace BookKeep.Tests.Data
                               "nor yet a dry, bare, sandy hole with nothing in it to sit down on or to eat: " +
                               "it was a hobbit-hole, and that means comfort.",
                 ImageUrl = "https://images.gr-assets.com/books/1372847500l/5907.jpg",
-                IsRead = false
+                IsRead = true
 
             });
             library.UpdateBook(updatedModel);
@@ -145,7 +144,7 @@ namespace BookKeep.Tests.Data
             mockSet.As<IQueryable<BookModel>>().Setup(m => m.ElementType).Returns(data.ElementType);
             mockSet.As<IQueryable<BookModel>>().Setup(m => m.GetEnumerator()).Returns(data.GetEnumerator());
             var mockContext = new Mock<BookContext>();
-            var library = new BookLibraryDB(mockContext.Object);
+            var library = new BookLibraryDb(mockContext.Object);
 
             var expected = Data[0]; // Hobbit
 
@@ -159,7 +158,7 @@ namespace BookKeep.Tests.Data
 
         [TestCategory("AccessViaContext")]
         [TestMethod]
-        public void GetAllBooks_ReturnsAllBooks()
+        public void GetAllBooksRead_ReturnsAllBooks_IsRead()
         {
             //--Arrange
             var mockSet = new Mock<DbSet<BookModel>>();
@@ -169,15 +168,38 @@ namespace BookKeep.Tests.Data
             mockSet.As<IQueryable<BookModel>>().Setup(m => m.ElementType).Returns(dataAsQueryable.ElementType);
             mockSet.As<IQueryable<BookModel>>().Setup(m => m.GetEnumerator()).Returns(dataAsQueryable.GetEnumerator());
             var mockContext = new Mock<BookContext>();
-            var library = new BookLibraryDB(mockContext.Object);
+            var library = new BookLibraryDb(mockContext.Object);
 
             //-- Act
             mockContext.Setup(m => m.Books).Returns(mockSet.Object);
-            var actual = library.GetAllBooks();
+            var actual = library.GetAllBooksRead();
 
             //--Assert
             Assert.IsTrue(actual.Any());
-            Assert.IsTrue(actual.Count == 2);
+            Assert.IsTrue(actual.Count == 1);
+        }
+
+        [TestCategory("AccessViaContext")]
+        [TestMethod]
+        public void GetAllBooksUnRead_ReturnsAllBooks_NotRead()
+        {
+            //--Arrange
+            var mockSet = new Mock<DbSet<BookModel>>();
+            var dataAsQueryable = Data.AsQueryable();
+            mockSet.As<IQueryable<BookModel>>().Setup(m => m.Provider).Returns(dataAsQueryable.Provider);
+            mockSet.As<IQueryable<BookModel>>().Setup(m => m.Expression).Returns(dataAsQueryable.Expression);
+            mockSet.As<IQueryable<BookModel>>().Setup(m => m.ElementType).Returns(dataAsQueryable.ElementType);
+            mockSet.As<IQueryable<BookModel>>().Setup(m => m.GetEnumerator()).Returns(dataAsQueryable.GetEnumerator());
+            var mockContext = new Mock<BookContext>();
+            var library = new BookLibraryDb(mockContext.Object);
+
+            //-- Act
+            mockContext.Setup(m => m.Books).Returns(mockSet.Object);
+            var actual = library.GetAllBooksRead();
+
+            //--Assert
+            Assert.IsTrue(actual.Any());
+            Assert.IsTrue(actual.Count == 1);
         }
 
         [TestCategory("AccessViaContext")]
@@ -204,7 +226,7 @@ namespace BookKeep.Tests.Data
             mockContext.Setup(c => c.Books).Returns(mockSet.Object);
 
             //--Act
-            var library = new BookLibraryDB(mockContext.Object);
+            var library = new BookLibraryDb(mockContext.Object);
             var books = await library.GetAllBooksAsync();
 
             //--Assert
@@ -225,7 +247,7 @@ namespace BookKeep.Tests.Data
             mockSet.As<IQueryable<BookModel>>().Setup(m => m.ElementType).Returns(data.ElementType);
             mockSet.As<IQueryable<BookModel>>().Setup(m => m.GetEnumerator()).Returns(data.GetEnumerator());
             var mockContext = new Mock<BookContext>();
-            var library = new BookLibraryDB(mockContext.Object);
+            var library = new BookLibraryDb(mockContext.Object);
 
 
             //-- Act
