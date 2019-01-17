@@ -81,11 +81,11 @@ namespace BookKeep.ViewModels
            book.Author = htmlRegex.Replace(book.Author, string.Empty);
         }
 
-        // Todo - Think how to prevent it from crashing on massive search
+        // Todo - Think how to prevent it from crashing on searching just one letter.
         public async Task SearchBooksAsync(string parameter)
         {
             if (string.IsNullOrWhiteSpace(parameter)) return;
-            if (parameter.Length < 3) return;
+            if (parameter.Length < 2) return;
 
             SearchResults.Clear();
 
