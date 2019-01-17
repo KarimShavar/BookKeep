@@ -1,10 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using BookKeep.Models;
 using System.Data.Entity;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using BookKeep.Models;
 
 namespace BookKeep.Data
 {
@@ -12,7 +7,7 @@ namespace BookKeep.Data
     {
         public BookContext() :base("LibraryDb")
         {
-            Database.SetInitializer(new MigrateDatabaseToLatestVersion<BookContext, Data.Migrations.Configuration>());    
+            Database.SetInitializer(new MigrateDatabaseToLatestVersion<BookContext, Migrations.Configuration>());    
         }
 
         public virtual DbSet<BookModel> Books { get; set; }

@@ -1,42 +1,39 @@
-﻿using System;
+﻿using BookKeep.Helpers.Interfaces;
+using BookKeep.Models;
 using System.Collections.Generic;
 using System.Data.Entity;
-using System.Data.Entity.Migrations;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
-using BookKeep.Helpers.Interfaces;
-using BookKeep.Models;
 
 namespace BookKeep.Data
 {
-    public class BookLibraryDB : IDataAccess
+    public class BookLibraryDb : IDataAccess
     {
-        private BookContext Context;
+        private readonly BookContext _context;
 
-        public BookLibraryDB(BookContext context)
+        public BookLibraryDb(BookContext context)
         {
-            Context = context;
+            _context = context;
         }
 
         public void AddBook(BookModel book)
         {
-            Context.Books.Add(book);
-            Context.SaveChanges();
+            _context.Books.Add(book);
+            _context.SaveChanges();
         }
 
         public void DeleteBook(long bookId)
         {
-            var result = Context.Books.FirstOrDefault(b => b.BookId == bookId);
+            var result = _context.Books.FirstOrDefault(b => b.BookId == bookId);
             if (result == null) return;
 
-            Context.Books.Remove(result);
-            Context.SaveChanges();
+            _context.Books.Remove(result);
+            _context.SaveChanges();
         }
 
         public void UpdateBook(BookModel book)
         {
-            var result = Context.Books.FirstOrDefault(b => b.BookId == book.BookId);
+            var result = _context.Books.FirstOrDefault(b => b.BookId == book.BookId);
             if (result == null) return;
 
             result.Author = book.Author;
@@ -45,37 +42,35 @@ namespace BookKeep.Data
             result.IsRead = book.IsRead;
             result.Title = book.Title;
 
-            Context.SaveChanges();
+            _context.SaveChanges();
         }
 
         public BookModel GetBook(long bookId)
         {
-            var result = Context.Books.FirstOrDefault(b => b.BookId == bookId);
+            var result = _context.Books.FirstOrDefault(b => b.BookId == bookId);
             return result;
         }
 
+        // Differentiate Read/Unread for easy of accessing Library vs Wishlist
         public List<BookModel> GetAllBooksRead()
         {
-            if (Context.Books.Any() == false) throw new Exception("Database is empty");
-            return Context.Books.Where(b => b.IsRead).ToList();
+            return _context.Books.Where(b => b.IsRead).ToList();
         }
 
         public List<BookModel> GetAllBooksUnRead()
         {
-            if (Context.Books.Any() == false) throw new Exception("Database is empty");
-            return Context.Books.Where(b => b.IsRead == false).ToList();
+            return _context.Books.Where(b => b.IsRead == false).ToList();
         }
 
         public async Task<List<BookModel>> GetAllBooksAsync()
         {
-            if (Context.Books.Any() == false) throw new Exception("Database is empty");
-            return await Context.Books.ToListAsync();
+            return await _context.Books.ToListAsync();
         }
 
         public void MarkBookAsRead(long bookId)
         {
-                Context.Books.FirstOrDefault(b => b.BookId == bookId).IsRead = true;
-                Context.SaveChanges();
+            _context.Books.FirstOrDefault(b => b.BookId == bookId).IsRead = true;
+            _context.SaveChanges();
         }
     }
 }
