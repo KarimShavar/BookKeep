@@ -1,5 +1,5 @@
 # BookKeep
-Simple WPF application to keep track of books user has read as well as a wishlist and search functionality.
+WPF application to keep track of books user has read as well as a wishlist and search functionality.
 
 App makes use of , and its main features are based on it [GoodreadsApi](goodreads.com/api)
 together with [Goodreads .NET API Client Library](https://github.com/adamkrogh/goodreads-dotnet).
