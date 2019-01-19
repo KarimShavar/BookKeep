@@ -14,6 +14,10 @@ together with [Goodreads .NET API Client Library](https://github.com/adamkrogh/g
 ### Author
 [Adam Ciszewski](https://github.com/KarimShavar) - [KarimShavar](https://github.com/KarimShavar)
 
+### UI
+
+![alt text](https://i.imgur.com/8NMBxu4.png "Library View")
+![alt text](https://i.imgur.com/XQ6iHDk.png "Search View")
 ### License
 
 This project is licensed under the MIT License.
