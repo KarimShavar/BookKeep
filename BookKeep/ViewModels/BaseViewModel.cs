@@ -8,42 +8,18 @@ using BookKeep.Properties;
 
 namespace BookKeep.ViewModels
 {
-    /// <summary>
-    /// Allows accessing Collections from base. Solves a lot of issues with switching views.
-    /// </summary>
-    public class BaseViewModel : INotifyPropertyChanged
+    public abstract class BaseViewModel : INotifyPropertyChanged
     {
-        private ObservableCollection<BookModel> _libraryCollection;
-        private ObservableCollection<BookModel> _wishlistCollection;
-        private ObservableCollection<BookModel> _searchResults;
-
         public BookLibraryDb LibraryDb { get; set; }
 
-        public ObservableCollection<BookModel> LibraryCollection
+        public virtual void OnDelete(BookModel book)
         {
-            get => _libraryCollection;
-            set
+            if (book == null) return;
+
+            using (var context = new BookContext())
             {
-                _libraryCollection = value;
-                OnPropertyChanged();
-            }
-        }
-        public ObservableCollection<BookModel> WishlistCollection
-        {
-            get => _wishlistCollection;
-            set
-            {
-                _wishlistCollection = value;
-                OnPropertyChanged();
-            }
-        }
-        public ObservableCollection<BookModel> SearchResults
-        {
-            get => _searchResults;
-            set
-            {
-                _searchResults = value;
-                OnPropertyChanged();
+                LibraryDb = new BookLibraryDb(context);
+                LibraryDb.DeleteBook(book.BookId);
             }
         }
 

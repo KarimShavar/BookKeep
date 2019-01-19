@@ -6,7 +6,6 @@ namespace BookKeep.ViewModels
     public class MainWindowViewModel : BaseViewModel
     {
         private BaseViewModel _currentViewModel;
-
         private readonly SearchViewModel _searchViewModel = new SearchViewModel();
 
         public RelayCommand<string> SearchCommand { get; private set; }

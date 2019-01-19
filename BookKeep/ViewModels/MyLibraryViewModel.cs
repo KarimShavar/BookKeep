@@ -8,24 +8,27 @@ namespace BookKeep.ViewModels
 {
     public class MyLibraryViewModel: BaseViewModel
     {
-        public RelayCommand<BookModel> DeleteBookCommand { get; private set; } 
+        public RelayCommand<BookModel> DeleteBookCommand { get; private set; }
+        private ObservableCollection<BookModel> _libraryCollection;
+        public ObservableCollection<BookModel> LibraryCollection
+        {
+            get => _libraryCollection;
+            set
+            {
+                _libraryCollection = value;
+                OnPropertyChanged();
+            }
+        }
         public MyLibraryViewModel()
         {
             LibraryCollection = new ObservableCollection<BookModel>(GetLibrary());
-            DeleteBookCommand = new RelayCommand<BookModel>(OnDeleteFromLibrary);
+            DeleteBookCommand = new RelayCommand<BookModel>(OnDelete);
         }
 
-        private void OnDeleteFromLibrary(BookModel obj)
+        public override void OnDelete(BookModel book)
         {
-            if (obj == null) return;
-
-            using (var context = new BookContext())
-            {
-                LibraryDb = new BookLibraryDb(context);
-                LibraryDb.DeleteBook(obj.BookId);
-            }
-
-            LibraryCollection.Remove(obj);
+            base.OnDelete(book);
+            LibraryCollection.Remove(book);
         }
 
         // Todo - Think how to avoid calling db when viewModel initialise / stop initializing viewmodel.
