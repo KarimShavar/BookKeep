@@ -9,24 +9,26 @@ namespace BookKeep.ViewModels
     public class WishlistViewModel : BaseViewModel
     {
         public RelayCommand<BookModel> DeleteBookCommand { get; private set; }
+        private ObservableCollection<BookModel> _wishlistCollection;
+        public ObservableCollection<BookModel> WishlistCollection
+        {
+            get => _wishlistCollection;
+            set
+            {
+                _wishlistCollection = value;
+                OnPropertyChanged();
+            }
+        }
         public WishlistViewModel()
         {
             WishlistCollection = new ObservableCollection<BookModel>(GetWishlist());
-            DeleteBookCommand = new RelayCommand<BookModel>(OnDeleteFromWishlist);
+            DeleteBookCommand = new RelayCommand<BookModel>(OnDelete);
         }
 
-        // Todo - Almost same method as in MyLibraryViewModel - abstract?
-        private void OnDeleteFromWishlist(BookModel obj)
+        public override void OnDelete(BookModel book)
         {
-            if (obj == null) return;
-
-            using (var context = new BookContext())
-            {
-                LibraryDb = new BookLibraryDb(context);
-                LibraryDb.DeleteBook(obj.BookId);
-            }
-
-            WishlistCollection.Remove(obj);
+            base.OnDelete(book);
+            WishlistCollection.Remove(book);
         }
 
         private List<BookModel> GetWishlist()

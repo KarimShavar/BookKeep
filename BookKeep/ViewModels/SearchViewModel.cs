@@ -5,6 +5,7 @@ using Goodreads;
 using System.Collections.ObjectModel;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using Goodreads.Models.Response;
 
 namespace BookKeep.ViewModels
 {
@@ -14,7 +15,17 @@ namespace BookKeep.ViewModels
         private const string ApiKey = "2zS0u37tZAqDBonnsYpSg"; 
         private const string ApiSecret = "ez5q1lv9FCKBkwctFXZbylkXt3Lwn3rFtnc16sqqM";
         private readonly IGoodreadsClient _goodreadsClient;
+        private ObservableCollection<BookModel> _searchResults;
 
+        public ObservableCollection<BookModel> SearchResults
+        {
+            get => _searchResults;
+            set
+            {
+                _searchResults = value;
+                OnPropertyChanged();
+            }
+        }
         public RelayCommand<BookModel> AddToLibraryCommand { get; private set; }
         public RelayCommand<BookModel> AddToWishlistCommand { get; private set; }
 
@@ -28,44 +39,35 @@ namespace BookKeep.ViewModels
             AddToWishlistCommand = new RelayCommand<BookModel>(OnAddToWishlist);
         }
 
-        // Todo - Think how to separate this method - Messy
-        private void OnAddToWishlist(BookModel obj)
+        private void OnAddToWishlist(BookModel book)
         {
-            if (obj == null) return;
-
-            var newBook = SetBookIsRead(obj, false);
-            GetBookDescriptions(obj.BookId, newBook);
-            SanitizeBookContent(newBook);
+            if (book == null) return;
+            SetReadFlag(book, false);
+            SanitizeBookContent(book);
+            book.Description = GetBookDescriptions(book.BookId);
 
             using (var context = new BookContext())
             {
                 LibraryDb = new BookLibraryDb(context);
-                LibraryDb.AddBook(newBook);
+                LibraryDb.AddBook(book);
             }
         }
        
-        // Todo - Think how to separate this method - Messy
-        private void OnAddToLibrary(BookModel obj)
+        private void OnAddToLibrary(BookModel book)
         {
-            if (obj == null) return;
-
-            var newBook = SetBookIsRead(obj, true);
-            GetBookDescriptions(obj.BookId, newBook);
-            SanitizeBookContent(newBook);
+            if (book == null) return;
+            SetReadFlag(book, true);
+            SanitizeBookContent(book);
+            book.Description = GetBookDescriptions(book.BookId);
 
             using (var context = new BookContext())
             {
                 LibraryDb = new BookLibraryDb(context);
-                LibraryDb.AddBook(newBook);
+                LibraryDb.AddBook(book);
             }
         }
 
-        private BookModel SetBookIsRead(BookModel book, bool isRead)
-        {
-            var newBook = book;
-            newBook.IsRead = isRead;
-            return newBook;
-        }
+        private void SetReadFlag(BookModel book, bool isRead) => book.IsRead = isRead;
 
         /// <summary>
         /// In principle should remove all html tags from string.
@@ -81,15 +83,23 @@ namespace BookKeep.ViewModels
            book.Author = htmlRegex.Replace(book.Author, string.Empty);
         }
 
-        // Todo - Think how to prevent it from crashing on searching just one letter.
+        // Todo - fast but could be made async - async command needed.
+        private string GetBookDescriptions(long bookId)
+        {
+            var book = _goodreadsClient.Books.GetByBookId(bookId).Result;
+            return book.Description;
+        }
+
         public async Task SearchBooksAsync(string parameter)
         {
             if (string.IsNullOrWhiteSpace(parameter)) return;
-            if (parameter.Length < 2) return;
+            if (parameter.Length < 2) return; // API limitation on search parameters
 
             SearchResults.Clear();
 
             var books = await _goodreadsClient.Books.Search(parameter);
+            if (books.Pagination.TotalItems == 0) return;
+
             foreach (var book in books.List)
             {
                 SearchResults.Add(new BookModel()
@@ -103,19 +113,5 @@ namespace BookKeep.ViewModels
                 });
             }
         }
-
-        /// <summary>
-        /// Goodreads search api doesn't provide access to descriptions,
-        /// Separate method needed to pass description into model,
-        /// Not async - would need async commands - ToDo
-        /// </summary>
-        /// <param name="bookId"></param>
-        /// <param name="newBook"></param>
-        private void GetBookDescriptions(long bookId, BookModel newBook)
-        {
-            var book = _goodreadsClient.Books.GetByBookId(bookId).Result;
-            newBook.Description = book.Description;
-        }
-
     }
 }
